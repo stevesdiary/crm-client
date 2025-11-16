@@ -1,80 +1,98 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
+import React, { useState } from 'react';
+import { Link, useLocation, Outlet } from 'react-router-dom';
+import {
+  DashboardOutlined,
+  ContactsOutlined,
+  TeamOutlined,
+  DollarCircleOutlined,
+  CheckCircleOutlined,
+  CustomerServiceOutlined,
+  PhoneOutlined,
+  BellOutlined,
+  SettingOutlined,
+  SecurityScanOutlined,
+  FileTextOutlined,
+  SafetyCertificateOutlined,
+  UserOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from '@ant-design/icons';
 
-export const Layout: React.FC<LayoutProps> = ({ children }) => {
+const navigation = [
+  { name: 'Dashboard', href: '/dashboard', icon: <DashboardOutlined /> },
+  { name: 'Contacts', href: '/contacts', icon: <ContactsOutlined /> },
+  { name: 'Leads', href: '/leads', icon: <TeamOutlined /> },
+  { name: 'Opportunities', href: '/opportunities', icon: <DollarCircleOutlined /> },
+  { name: 'Tasks', href: '/tasks', icon: <CheckCircleOutlined /> },
+  { name: 'Tickets', href: '/tickets', icon: <CustomerServiceOutlined /> },
+  { name: 'Communications', href: '/communications', icon: <PhoneOutlined /> },
+  { name: 'Workflows', href: '/workflows', icon: <SettingOutlined /> },
+  { name: 'Reports', href: '/reports', icon: <BellOutlined /> },
+  { name: 'Users', href: '/users', icon: <UserOutlined /> },
+  { name: 'Security', href: '/security', icon: <SecurityScanOutlined /> },
+  { name: 'Audit Logs', href: '/audit', icon: <FileTextOutlined /> },
+  { name: 'GDPR', href: '/gdpr', icon: <SafetyCertificateOutlined /> },
+];
+
+const Layout: React.FC = () => {
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '📊' },
-    { name: 'Contacts', href: '/contacts', icon: '👥' },
-    { name: 'Leads', href: '/leads', icon: '🎯' },
-    { name: 'Opportunities', href: '/opportunities', icon: '💰' },
-    { name: 'Tasks', href: '/tasks', icon: '✅' },
-    { name: 'Tickets', href: '/tickets', icon: '🎫' },
-    { name: 'Communications', href: '/communications', icon: '📞' },
-    { name: 'Workflows', href: '/workflows', icon: '⚡' },
-    { name: 'Reports', href: '/reports', icon: '📈' },
-    { name: 'Users', href: '/users', icon: '👤' },
-    { name: 'Security', href: '/security', icon: '🔒' },
-    { name: 'Audit Logs', href: '/audit', icon: '📄' },
-    { name: 'GDPR', href: '/gdpr', icon: '🛡️' },
-  ];
-
-  const isActive = (href: string) => location.pathname === href;
+  const isActive = (href: string) => location.pathname.startsWith(href);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Mobile menu button */}
-      <button
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg"
-      >
-        {mobileMenuOpen ? '✕' : '☰'}
-      </button>
-
+    <div className="flex h-screen bg-gray-100 font-sans">
       {/* Sidebar */}
-      <div className={`w-64 bg-white shadow-sm border-r border-gray-200 fixed lg:static inset-y-0 left-0 transform ${
-        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 transition-transform duration-200 ease-in-out z-40`}>
-        <div className="p-6">
-          <h1 className="text-xl font-bold text-gray-900">CRM Platform</h1>
+      <div
+        className={`bg-white text-gray-800 flex flex-col transition-all duration-300 ease-in-out ${
+          sidebarCollapsed ? 'w-20' : 'w-64'
+        }`}
+      >
+        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          {!sidebarCollapsed && <h1 className="text-xl font-bold text-gray-900">CRM</h1>}
+          <button
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="text-gray-500 hover:text-gray-900 focus:outline-none"
+          >
+            {sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          </button>
         </div>
-        <nav className="mt-6">
+        <nav className="flex-1 mt-6 space-y-2">
           {navigation.map((item) => (
             <Link
               key={item.name}
               to={item.href}
-              className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
+              className={`flex items-center px-6 py-3 text-sm font-medium transition-all duration-200 ${
                 isActive(item.href)
-                  ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }`}
+                  ? 'bg-blue-50 text-blue-700 border-r-4 border-blue-700'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              } ${sidebarCollapsed ? 'justify-center' : ''}`}
             >
-              <span className="mr-3">{item.icon}</span>
-              {item.name}
+              <div className="text-lg">{item.icon}</div>
+              {!sidebarCollapsed && <span className="ml-4">{item.name}</span>}
             </Link>
           ))}
         </nav>
       </div>
 
-      {/* Overlay */}
-      {mobileMenuOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
       {/* Main content */}
-      <div className="flex-1 overflow-auto lg:ml-0">
-        <div className="lg:hidden h-16" /> {/* Spacer for mobile */}
-        {children}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="flex items-center justify-between h-16 px-6 bg-_white border-b border-gray-200">
+          <div className="flex items-center">
+            {/* Search bar can go here */}
+          </div>
+          <div className="flex items-center space-x-4">
+            <BellOutlined className="text-gray-500" />
+            <UserOutlined className="text-gray-500" />
+          </div>
+        </header>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
 };
+
+export default Layout;
