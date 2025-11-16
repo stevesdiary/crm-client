@@ -1,37 +1,36 @@
 import React from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, Typography } from '@mui/material';
 
-interface RevenueData {
-  month: string;
-  revenue: number;
-}
+const data = [
+  { name: 'Jan', revenue: 4000 },
+  { name: 'Feb', revenue: 3000 },
+  { name: 'Mar', revenue: 5000 },
+  { name: 'Apr', revenue: 4500 },
+  { name: 'May', revenue: 6000 },
+  { name: 'Jun', revenue: 5500 },
+];
 
-interface RevenueChartProps {
-  data: RevenueData[];
-}
-
-export default function RevenueChart({ data }: RevenueChartProps) {
-  const maxRevenue = Math.max(...data.map(d => d.revenue));
-
+const RevenueChart: React.FC = () => {
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold mb-4">Revenue Trend</h3>
-      <div className="space-y-4">
-        {data.map((item, index) => (
-          <div key={index} className="flex items-center space-x-4">
-            <div className="w-16 text-sm text-gray-600">{item.month}</div>
-            <div className="flex-1 bg-gray-200 rounded-full h-6 relative">
-              <div
-                className="bg-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
-                style={{ width: `${maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0}%` }}
-              >
-                <span className="text-white text-xs font-medium">
-                  ${item.revenue.toLocaleString()}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+    <Card className="shadow-lg">
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Revenue Overview
+        </Typography>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="revenue" stroke="#8884d8" activeDot={{ r: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
   );
-}
+};
+
+export default RevenueChart;
