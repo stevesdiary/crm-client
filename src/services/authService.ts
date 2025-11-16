@@ -2,8 +2,8 @@ import { api } from './api';
 import { User, LoginResponse } from '../types/auth';
 
 export const authService = {
-  async login(email: string, password: string): Promise<LoginResponse> {
-    const response = await api.post('/api/v1/auth/login', { email, password });
+  async login(email: string, password: string, tenantId: string = 'default'): Promise<LoginResponse> {
+    const response = await api.post('/auth/login', { email, password, tenantId });
     return {
       user: response.data.user,
       token: response.data.access_token,
@@ -11,15 +11,16 @@ export const authService = {
   },
 
   async getCurrentUser(): Promise<User> {
-    const response = await api.get('/api/v1/auth/me');
+    const response = await api.get('/auth/me');
     return response.data;
   },
 
-  async signup(email: string, password: string, fullName: string): Promise<User> {
-    const response = await api.post('/api/v1/auth/signup', {
+  async signup(email: string, password: string, name: string, tenantId: string = 'default'): Promise<User> {
+    const response = await api.post('/auth/signup', {
       email,
       password,
-      fullName,
+      name,
+      tenantId,
     });
     return response.data;
   },

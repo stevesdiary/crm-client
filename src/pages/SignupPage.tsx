@@ -30,7 +30,8 @@ export default function SignupPage() {
       await authService.signup(data.email, data.password, data.fullName);
       navigate('/login');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Signup failed');
+      const errorMessage = err.response?.data?.message || err.message || 'Signup failed';
+      setError(typeof errorMessage === 'string' ? errorMessage : 'Signup failed');
     } finally {
       setLoading(false);
     }

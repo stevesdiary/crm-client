@@ -2,7 +2,8 @@ import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({
   reducer: {
-    // Add your reducers here
+    // Temporary dummy reducer to fix the error
+    app: (state = {}, action: any) => state,
   },
 })
 
